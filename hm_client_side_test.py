@@ -5,6 +5,8 @@ from pygame.locals import *
 from threading import Thread
 
 import time
+sock = socket.socket ()
+sock.settimeout(0.1)
 pygame.init()
 WINDOW_SCREEN=(900,600)
 
@@ -14,7 +16,7 @@ colour_gray=(170,170,170)
 smallfont = pygame.font.SysFont('Corbel',35)
 smallerfont = pygame.font.SysFont('Corbel',25)
 font=pygame.font.SysFont(None,100)
-notif="im gey"
+notif="wait"
 string=""
 boo=True
 L1=pygame.image.load("lives=0.png")
@@ -89,16 +91,13 @@ def method_w(): #waiting executioner.
         pygame.display.update()
         clock.tick(30)
 def method_c():
+ global lives,notif,string
  screen = pygame.display.set_mode(WINDOW_SCREEN, 0, 32)
  click=False #click assigned to prevent bugs
- update=False
+ running=True
+ p=""
  lives=6
- notif="testing"
- string="alotmoretesting"
- while True:
-        if update==True:
-            string, notif, lives=method_u()
-            update=False
+ while running:
         f=150
         screen.fill((0, 0, 0))
         tries(lives)
@@ -114,9 +113,10 @@ def method_c():
         pygame.draw.rect(screen, colour_gray, button)
         draw_text("EXIT", smallfont, (255, 105, 180), screen, 730, 30)
         draw_text(notif, smallfont, colour_gray, screen, 20, 20)
+        draw_text("letter guessed:", smallfont, (255, 105, 180), screen, 450, 500)
         for i in list(string):
             draw_text(i, smallfont, colour_white, screen, f, 250)
-            f += 10
+            f += 30
         click = False
         #click assigned to prevent bugs
         for event in pygame.event.get():
@@ -124,19 +124,23 @@ def method_c():
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN:
-               print(KEYDOWN)
-
-
-
-               if event.key == K_ESCAPE:
-                pygame.quit()
-                sys.exit()
+                if event.key == K_ESCAPE:
+                 pygame.quit()
+                 sys.exit()
+                if event.key == K_BACKSPACE:
+                    p= p[:-1]
+                else:
+                    p+= event.unicode.upper()
+                    if len(p)==1:
+                        send(p)
+                        draw_text(p, smallfont, (255, 105, 180), screen, 680, 500)
+                        p=""
+                        string, notif, lives = method_u()
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
-
         pygame.display.update()
-        clock.tick(50)
+        clock.tick(100)
 # def method_c():
 #     print(recieve(), end = "")
 #     letter = input()
@@ -152,7 +156,7 @@ def method_u():
     notif=recieve()
     lives=recieve()
 
-    return string,notif,lives
+    return string,notif,int(lives)
 def game_init():
     load()
     while True:

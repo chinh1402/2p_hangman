@@ -131,8 +131,8 @@ def take_word(p):
     
 def make_guess(p):
     send(p,"c")
-    send(p,"Guess a character:")
     guess = recieve(p)
+    print(guess)
     return guess
     
 def print_hangman(p1, p2, lives):
@@ -152,10 +152,9 @@ def notif(p1, p2, guess, string, appearance):
     msg = 'The string now is: '+string
     send(p1,msg)
     send(p2,msg)
+
 def update(p1,p2,guess,string,appearance,lives):
     a=str(lives)
-    send(p1,"u")
-    send(p2,"u")
     send(p1,string)
     send(p2,string)
     notifi = 'The guesser guessed the letter '+guess+', there is '+str(appearance)+" "+guess
@@ -163,6 +162,7 @@ def update(p1,p2,guess,string,appearance,lives):
     send(p2,notifi)
     send(p1,a)
     send(p2,a)
+    print("sent from update")
 
 def won(winner, p1, p2):
     send(p1,'p')
@@ -181,7 +181,8 @@ def ask_for_new_game(p1, p2):
     if ans1 == 'y' and ans2 == 'y':
         return True
     return False
-    
+
+
 def start_game(executioner, guesser):
     send(executioner,'p')
     send(executioner,'You are the executioner')
@@ -191,13 +192,13 @@ def start_game(executioner, guesser):
     string = "" #current string
     guesses = [] #guesses which were made
     while (string != word) and (lives>0):
-        guess = make_guess(guesser) #taking char from guesser
-        guesses.append(guess) #appending to guesses (up there)
-        right, appearance = guessed(word, guess) #giving key_word in and guessing char in there; returning 1 boolean and 1 int
-        string = execute(word, guesses) #looping thruu the string using maths and return the new string (key)
-        print_hangman(executioner, guesser, lives) #dont really have to say much abt this
-        notif(executioner, guesser, guess, string, appearance) #notif
-        update(executioner,guesser, guess,string, appearance,lives)
+        print("me in start_game")
+        guess = make_guess(guesser) #taking char from guesser #worked
+        guesses.append(guess) #appending to guesses (up there) #worked
+        right, appearance = guessed(word, guess) #giving key_word in and guessing char in there; returning 1 boolean and 1 int #worked
+        string = execute(word, guesses) #looping thruu the string using maths and return the new string (key) #worked
+        update(executioner,guesser, guess,string, appearance,lives) #why  u  have to be like this update.kun
+
     if lives == 0:
         winner = 'executioner'
     else:
@@ -227,6 +228,7 @@ def init_game():
     send(conn1, "s")
     send(conn2, "s")
     game_room(conn1, conn2)
+
     
 
 init_game()
