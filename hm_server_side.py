@@ -1,4 +1,4 @@
-import socket 
+import socket
 from random import choice
     
 PORT = 5050
@@ -172,13 +172,10 @@ def won(winner, p1, p2):
     send(p2,msg)
     
 def ask_for_new_game(p1, p2):
-    send(p1, 'c')
-    send(p1, 'Do you want to continue playing?(y/n)')
-    send(p2, 'c')
-    send(p2, 'Do you want to continue playing?(y/n)')
     ans1 = recieve(p1)
     ans2 = recieve(p2)
-    if ans1 == 'y' and ans2 == 'y':
+    if ans1 == 'Y' and ans2 == 'Y':
+        print("i wass in here")
         return True
     return False
 
@@ -193,7 +190,6 @@ def start_game(executioner, guesser):
     guesses = [] #guesses which were made
     send(guesser,"c")
     while (string != word) and (lives>0):
-        print("me in start_game")
         guess = make_guess(guesser) #taking char from guesser #worked
         guesses.append(guess) #appending to guesses (up there) #worked
         right, appearance = guessed(word, guess) #giving key_word in and guessing char in there; returning 1 boolean and 1 int #worked
@@ -202,21 +198,19 @@ def start_game(executioner, guesser):
         update_string(executioner,guesser, string)
         update_notif(executioner,guesser,guess,appearance)
         update_lives(executioner,guesser,lives)
-    if lives == 0:
-       pass
-    else:
-        pass
-    
+    if recieve(executioner)==recieve(guesser)=="ok":
+        ask_for_new_game(executioner,guesser)
+
 def game_room(p1, p2):
     PLAYING = True
     global lives
     while PLAYING:
         lives = 6
+        print("im in gameroom")
         executioner, guesser = get_role(p1, p2)
         start_game(executioner, guesser)
         PLAYING = ask_for_new_game(p1, p2)
-    
-    
+
 def init_game():
     server.listen()
     print("SERVER IS LISTENING ON", IPv4)

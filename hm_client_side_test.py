@@ -73,6 +73,7 @@ def method_w(): #waiting executioner.
         screen.fill((0, 0, 0))
         draw_text("You're the executioner, please type in the word", smallfont, (255, 255, 255), screen, 100, 250)
         draw_text("executing word:", smallfont, (255, 255, 255), screen, 100, 300)
+        draw_text("this gonn lag (not a lil)", smallfont, (255, 255, 255), screen, 100,400)
         text_surface = smallfont.render(word, True, colour_gray)
         screen.blit(text_surface, (330, 300))
         for event in pygame.event.get():
@@ -145,7 +146,7 @@ def method_c():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
-        if u>=2 and "-"not in string:
+        if u>=1 and "-"not in string:
             ask_for_new_game_room_guesser_won()
         elif lives==0:
             ask_for_new_game_room_executioner_won()
@@ -173,7 +174,7 @@ def method_cw(): #spectate room
          u+=1
         else: pass
 
-        if u >= 2 and "-" not in string:
+        if u >= 1 and "-" not in string:
             ask_for_new_game_room_guesser_won()
         elif lives == 0:
             ask_for_new_game_room_executioner_won()
@@ -394,9 +395,11 @@ def play(): #plan: update--> shows
         clock.tick(50)
 def ask_for_new_game_room_guesser_won():
     global lives,notif,string
+    send("ok")
     screen = pygame.display.set_mode(WINDOW_SCREEN, 0, 32)
     click = False
     running = True
+    add=""
     while running:
         f = 150
         screen.fill((0, 0, 0))
@@ -413,6 +416,9 @@ def ask_for_new_game_room_guesser_won():
         draw_text("EXIT", smallfont, (255, 105, 180), screen, 730, 30)
         draw_text(notif, smallfont, colour_gray, screen, 20, 20)
         draw_text("guesser won and i dont care", smallfont, colour_gray, screen, 150, 400)
+        draw_text("another game?(Y/N)", smallfont, colour_white, screen, 150, 500)
+        text_surface = smallfont.render(add, True, colour_gray)
+        screen.blit(text_surface, (450, 500))
         for i in list(string):
             draw_text(i, smallfont, colour_white, screen, f, 250)
             f += 30
@@ -426,16 +432,25 @@ def ask_for_new_game_room_guesser_won():
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
+                if event.key == K_KP_ENTER or event.key == K_RETURN:  # press enter to join the game for testing
+                    send(add)
+                if event.key == K_BACKSPACE:
+                    add = add[:-1]
+                else:
+                    add += event.unicode.upper()
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
+
         pygame.display.update()
         clock.tick(10)
 def ask_for_new_game_room_executioner_won():
     global lives, notif, string
+    send("ok")
     screen = pygame.display.set_mode(WINDOW_SCREEN, 0, 32)
     click = False
     running = True
+    add=""
     while running:
         f = 150
         screen.fill((0, 0, 0))
@@ -452,6 +467,10 @@ def ask_for_new_game_room_executioner_won():
         draw_text("EXIT", smallfont, (255, 105, 180), screen, 730, 30)
         draw_text(notif, smallfont, colour_gray, screen, 20, 20)
         draw_text("executioner won and i care", smallfont, colour_gray, screen, 150, 400)
+        draw_text("another game?(Y/N)", smallfont, colour_white, screen, 150, 500)
+        text_surface = smallfont.render(add, True, colour_gray)
+        screen.blit(text_surface, (450, 500))
+
         for i in list(string):
             draw_text(i, smallfont, colour_white, screen, f, 250)
             f += 30
@@ -465,6 +484,12 @@ def ask_for_new_game_room_executioner_won():
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
+                if event.key == K_KP_ENTER or event.key == K_RETURN:  # press enter to join the game for testing
+                  send(add)
+                if event.key == K_BACKSPACE:
+                    add = add[:-1]
+                else:
+                    add += event.unicode.upper()
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
