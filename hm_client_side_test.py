@@ -10,14 +10,14 @@ sock.settimeout(0.1)
 pygame.init()
 WINDOW_SCREEN=(900,600)
 
-pygame.display.set_caption("hanghang")
+pygame.display.set_caption("hangmannna")
 colour_white=(255,255,255)
 colour_gray=(170,170,170)
 smallfont = pygame.font.SysFont('Corbel',35)
 smallerfont = pygame.font.SysFont('Corbel',25)
 font=pygame.font.SysFont(None,100)
-notif="wait"
-string=""
+notif="this is an X letter word :D, type"
+string="-------------"
 boo=True
 L1=pygame.image.load("lives=0.png")
 L2=pygame.image.load("lives=1.png")
@@ -26,6 +26,8 @@ L4=pygame.image.load("lives=3.png")
 L5=pygame.image.load("lives=4.png")
 L6=pygame.image.load("lives=5.png")
 L7=pygame.image.load("lives=6.png")
+hangman=pygame.image.load("hangman.png")
+pygame.display.set_icon(hangman)
 #====================================================================
 PORT = 5050
 IPv4 = "26.253.46.146"
@@ -35,6 +37,7 @@ HEADER = 64
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
+#=====================================================================
 def send(msg):
     message = msg.encode(FORMAT)
     msg_length = len(message)
@@ -83,7 +86,7 @@ def method_w(): #waiting executioner.
                 if event.key == K_KP_ENTER or event.key == K_RETURN:  # press enter to join the game for testing
                     running=False
                     send(word)
-                    method_c()
+                    method_cw()
                 if event.key == K_BACKSPACE:
                     word = word[:-1]
                 else:
@@ -94,10 +97,9 @@ def method_c():
  global lives,notif,string
  screen = pygame.display.set_mode(WINDOW_SCREEN, 0, 32)
  click=False #click assigned to prevent bugs
- running=True
  p=""
  lives=6
- while running:
+ while True:
         f=150
         screen.fill((0, 0, 0))
         tries(lives)
@@ -135,7 +137,9 @@ def method_c():
                         send(p)
                         draw_text(p, smallfont, (255, 105, 180), screen, 680, 500)
                         p=""
-                        string, notif, lives = method_u()
+                        string= method_us()
+                        notif=method_un()
+                        lives=method_ul()
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
@@ -147,16 +151,68 @@ def method_c():
 #     while len(letter)>1:
 #         letter= input('I said a letter (no whitespace):')
 #     send(letter)
+def method_cw(): #spectate room
+    global lives,notif,string
+    screen = pygame.display.set_mode(WINDOW_SCREEN, 0, 32)
+    click=False
+    lives=6
+    running=True
+    while running:
+        if recieve()=="update":
+         string = method_us()
+         notif = method_un()
+         lives = method_ul()
+        else: time.sleep(3)
 
+        f = 150
+        screen.fill((0, 0, 0))
+        tries(lives)
+        # exit button
+        # --------------------------------------------------------------
+        mx, my = pygame.mouse.get_pos()
+        button = pygame.Rect(660, 20, 210, 50)
+        if button.collidepoint((mx, my)):
+            if click:
+                pygame.quit()
+                sys.exit()
+        # --------------------------------------------------------------
+        pygame.draw.rect(screen, colour_gray, button)
+        draw_text("EXIT", smallfont, (255, 105, 180), screen, 730, 30)
+        draw_text(notif, smallfont, colour_gray, screen, 20, 20)
+        draw_text("this is the executioner window", smallfont, (255, 105, 180), screen, 150, 500)
+        for i in list(string):
+            draw_text(i, smallfont, colour_white, screen, f, 250)
+            f += 30
+        click = False
+        # click assigned to prevent bugs
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+        pygame.display.update()
+        clock.tick(1)
 def method_p():
     print(recieve())
 
-def method_u():
+def method_us():
     string=recieve()
+    return string
+def method_un():
     notif=recieve()
+    return notif
+def method_ul():
     lives=recieve()
-
-    return string,notif,int(lives)
+    return int(lives)
+def method_ueval():
+    evall=recieve()
+    return evall
 def game_init():
     load()
     while True:
@@ -227,6 +283,7 @@ def waiting_executioner():
     pygame.display.update()
     clock.tick(10)
 def waiting_room():#find a way to direct to other room
+  screen = pygame.display.set_mode(WINDOW_SCREEN, 0, 32)
   running=True
   while running:
       screen.fill((0,0,0))
@@ -240,7 +297,6 @@ def waiting_room():#find a way to direct to other room
                   running = False
       pygame.display.update()
       clock.tick(1)
-
 def main_menu():
   click=False
 

@@ -130,7 +130,6 @@ def take_word(p):
     return word
     
 def make_guess(p):
-    send(p,"c")
     guess = recieve(p)
     print(guess)
     return guess
@@ -153,17 +152,18 @@ def notif(p1, p2, guess, string, appearance):
     send(p1,msg)
     send(p2,msg)
 
-def update(p1,p2,guess,string,appearance,lives):
-    a=str(lives)
+def update_string(p1,p2,string):
     send(p1,string)
     send(p2,string)
-    notifi = 'The guesser guessed the letter '+guess+', there is '+str(appearance)+" "+guess
-    send(p1,notifi)
-    send(p2,notifi)
-    send(p1,a)
-    send(p2,a)
-    print("sent from update")
-
+def update_notif(p1,p2,guess,appearance):
+    msg = 'The guesser guessed the letter '+guess+', there is '+str(appearance)+" "+guess
+    send(p1,msg)
+    send(p2,msg)
+def update_lives(p1,p2,lives):
+    send(p1,str(lives))
+    send(p2,str(lives))
+def update_eval(p):
+    send(p,  "update")
 def won(winner, p1, p2):
     send(p1,'p')
     send(p2,'p')
@@ -191,14 +191,17 @@ def start_game(executioner, guesser):
     word = take_word(executioner) #ans
     string = "" #current string
     guesses = [] #guesses which were made
+    send(guesser,"c")
     while (string != word) and (lives>0):
         print("me in start_game")
         guess = make_guess(guesser) #taking char from guesser #worked
         guesses.append(guess) #appending to guesses (up there) #worked
         right, appearance = guessed(word, guess) #giving key_word in and guessing char in there; returning 1 boolean and 1 int #worked
         string = execute(word, guesses) #looping thruu the string using maths and return the new string (key) #worked
-        update(executioner,guesser, guess,string, appearance,lives) #why  u  have to be like this update.kun
-
+        update_eval(executioner)
+        update_string(executioner,guesser, string)
+        update_notif(executioner,guesser,guess,appearance)
+        update_lives(executioner,guesser,lives)
     if lives == 0:
         winner = 'executioner'
     else:
