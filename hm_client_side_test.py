@@ -99,6 +99,7 @@ def method_c():
  click=False #click assigned to prevent bugs
  p=""
  lives=6
+ u=0
  while True:
         f=150
         screen.fill((0, 0, 0))
@@ -115,7 +116,7 @@ def method_c():
         pygame.draw.rect(screen, colour_gray, button)
         draw_text("EXIT", smallfont, (255, 105, 180), screen, 730, 30)
         draw_text(notif, smallfont, colour_gray, screen, 20, 20)
-        draw_text("letter guessed:", smallfont, (255, 105, 180), screen, 450, 500)
+        draw_text("letter guessed:", smallfont, (255, 105, 180), screen, 150, 500)
         for i in list(string):
             draw_text(i, smallfont, colour_white, screen, f, 250)
             f += 30
@@ -140,11 +141,17 @@ def method_c():
                         string= method_us()
                         notif=method_un()
                         lives=method_ul()
+                        u+=1
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
+        if u>=2 and "-"not in string:
+            ask_for_new_game_room_guesser_won()
+        elif lives==0:
+            ask_for_new_game_room_executioner_won()
         pygame.display.update()
         clock.tick(100)
+
 # def method_c():
 #     print(recieve(), end = "")
 #     letter = input()
@@ -157,12 +164,19 @@ def method_cw(): #spectate room
     click=False
     lives=6
     running=True
+    u=0
     while running:
         if recieve()=="update":
          string = method_us()
          notif = method_un()
          lives = method_ul()
-        else: time.sleep(3)
+         u+=1
+        else: pass
+
+        if u >= 2 and "-" not in string:
+            ask_for_new_game_room_guesser_won()
+        elif lives == 0:
+            ask_for_new_game_room_executioner_won()
 
         f = 150
         screen.fill((0, 0, 0))
@@ -378,4 +392,82 @@ def play(): #plan: update--> shows
 
         pygame.display.update()
         clock.tick(50)
+def ask_for_new_game_room_guesser_won():
+    global lives,notif,string
+    screen = pygame.display.set_mode(WINDOW_SCREEN, 0, 32)
+    click = False
+    running = True
+    while running:
+        f = 150
+        screen.fill((0, 0, 0))
+        # exit button
+        # --------------------------------------------------------------
+        mx, my = pygame.mouse.get_pos()
+        button = pygame.Rect(660, 20, 210, 50)
+        if button.collidepoint((mx, my)):
+            if click:
+                pygame.quit()
+                sys.exit()
+        # --------------------------------------------------------------
+        pygame.draw.rect(screen, colour_gray, button)
+        draw_text("EXIT", smallfont, (255, 105, 180), screen, 730, 30)
+        draw_text(notif, smallfont, colour_gray, screen, 20, 20)
+        draw_text("guesser won and i dont care", smallfont, colour_gray, screen, 150, 400)
+        for i in list(string):
+            draw_text(i, smallfont, colour_white, screen, f, 250)
+            f += 30
+        click = False
+        # click assigned to prevent bugs
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+        pygame.display.update()
+        clock.tick(10)
+def ask_for_new_game_room_executioner_won():
+    global lives, notif, string
+    screen = pygame.display.set_mode(WINDOW_SCREEN, 0, 32)
+    click = False
+    running = True
+    while running:
+        f = 150
+        screen.fill((0, 0, 0))
+        # exit button
+        # --------------------------------------------------------------
+        mx, my = pygame.mouse.get_pos()
+        button = pygame.Rect(660, 20, 210, 50)
+        if button.collidepoint((mx, my)):
+            if click:
+                pygame.quit()
+                sys.exit()
+        # --------------------------------------------------------------
+        pygame.draw.rect(screen, colour_gray, button)
+        draw_text("EXIT", smallfont, (255, 105, 180), screen, 730, 30)
+        draw_text(notif, smallfont, colour_gray, screen, 20, 20)
+        draw_text("executioner won and i care", smallfont, colour_gray, screen, 150, 400)
+        for i in list(string):
+            draw_text(i, smallfont, colour_white, screen, f, 250)
+            f += 30
+        click = False
+        # click assigned to prevent bugs
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+        pygame.display.update()
+        clock.tick(10)
 game_init()

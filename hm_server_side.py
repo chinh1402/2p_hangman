@@ -203,10 +203,9 @@ def start_game(executioner, guesser):
         update_notif(executioner,guesser,guess,appearance)
         update_lives(executioner,guesser,lives)
     if lives == 0:
-        winner = 'executioner'
+       pass
     else:
-        winner = 'guesser'
-    won(winner, executioner, guesser)
+        pass
     
 def game_room(p1, p2):
     PLAYING = True
