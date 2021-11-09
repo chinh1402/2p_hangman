@@ -175,19 +175,20 @@ def ask_for_new_game(p1, p2):
     ans1 = recieve(p1)
     ans2 = recieve(p2)
     if ans1 == 'Y' and ans2 == 'Y':
-        print("i wass in here")
+        send(p1,"cont")
+        send(p2,"cont")
         return True
     return False
 
 
 def start_game(executioner, guesser):
-    send(executioner,'p')
-    send(executioner,'You are the executioner')
+    send(executioner, 'p')
+    send(executioner, 'You are the executioner')  # ans
     send(guesser,'p')
     send(guesser,'You are the guesser')
-    word = take_word(executioner) #ans
     string = "" #current string
     guesses = [] #guesses which were made
+    word = take_word(executioner)
     send(guesser,"c")
     while (string != word) and (lives>0):
         guess = make_guess(guesser) #taking char from guesser #worked
@@ -198,8 +199,8 @@ def start_game(executioner, guesser):
         update_string(executioner,guesser, string)
         update_notif(executioner,guesser,guess,appearance)
         update_lives(executioner,guesser,lives)
-    if recieve(executioner)==recieve(guesser)=="ok":
-        ask_for_new_game(executioner,guesser)
+
+    ask_for_new_game(executioner,guesser)
 
 def game_room(p1, p2):
     PLAYING = True
@@ -207,10 +208,11 @@ def game_room(p1, p2):
     while PLAYING:
         lives = 6
         print("im in gameroom")
+        send(p1, "s")
+        send(p2, "s")
         executioner, guesser = get_role(p1, p2)
         start_game(executioner, guesser)
         PLAYING = ask_for_new_game(p1, p2)
-
 def init_game():
     server.listen()
     print("SERVER IS LISTENING ON", IPv4)
@@ -221,8 +223,6 @@ def init_game():
     print(add2,"connected")
     send(conn1, "Another player connected. Game will now start")
     send(conn2, "Connected. Game will now start.")
-    send(conn1, "s")
-    send(conn2, "s")
     game_room(conn1, conn2)
 
     

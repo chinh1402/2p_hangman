@@ -101,6 +101,8 @@ def method_c():
  p=""
  lives=6
  u=0
+ notif = "this is an X letter word :D, type"
+ string = "-------------"
  while True:
         f=150
         screen.fill((0, 0, 0))
@@ -166,6 +168,8 @@ def method_cw(): #spectate room
     lives=6
     running=True
     u=0
+    notif = "this is an X letter word :D, type"
+    string = "-------------"
     while running:
         if recieve()=="update":
          string = method_us()
@@ -395,11 +399,13 @@ def play(): #plan: update--> shows
         clock.tick(50)
 def ask_for_new_game_room_guesser_won():
     global lives,notif,string
-    send("ok")
     screen = pygame.display.set_mode(WINDOW_SCREEN, 0, 32)
     click = False
     running = True
     add=""
+    k=0
+    g=0
+    sent=False
     while running:
         f = 150
         screen.fill((0, 0, 0))
@@ -423,6 +429,15 @@ def ask_for_new_game_room_guesser_won():
             draw_text(i, smallfont, colour_white, screen, f, 250)
             f += 30
         click = False
+        if sent==True:
+            draw_text("Confirm? (Y/N)", smallfont, colour_white, screen, 150, 550)
+            if k==2:
+               if recieve()=="cont":
+                g+=1
+                if recieve() == "cont" and g==1:
+                 running=False
+                 pygame.display.quit()
+                 game_init()
         # click assigned to prevent bugs
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -432,12 +447,16 @@ def ask_for_new_game_room_guesser_won():
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-                if event.key == K_KP_ENTER or event.key == K_RETURN:  # press enter to join the game for testing
-                    send(add)
+
                 if event.key == K_BACKSPACE:
                     add = add[:-1]
                 else:
                     add += event.unicode.upper()
+                    if len(add) == 1:
+                        send(add)
+                        add = ""
+                        sent = True
+                        k += 1
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
@@ -446,11 +465,13 @@ def ask_for_new_game_room_guesser_won():
         clock.tick(10)
 def ask_for_new_game_room_executioner_won():
     global lives, notif, string
-    send("ok")
     screen = pygame.display.set_mode(WINDOW_SCREEN, 0, 32)
     click = False
     running = True
     add=""
+    sent=False
+    k=0
+    g=0
     while running:
         f = 150
         screen.fill((0, 0, 0))
@@ -475,6 +496,17 @@ def ask_for_new_game_room_executioner_won():
             draw_text(i, smallfont, colour_white, screen, f, 250)
             f += 30
         click = False
+        if sent==True:
+            draw_text("Confirm? (Y/N)", smallfont, colour_white, screen, 150, 550)
+            if k==2:
+               if recieve()=="cont":
+                g+=1
+                if recieve() == "cont" and g==1:
+                 running=False
+                 pygame.display.quit()
+                 game_init()
+
+
         # click assigned to prevent bugs
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -484,12 +516,15 @@ def ask_for_new_game_room_executioner_won():
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-                if event.key == K_KP_ENTER or event.key == K_RETURN:  # press enter to join the game for testing
-                  send(add)
                 if event.key == K_BACKSPACE:
                     add = add[:-1]
                 else:
                     add += event.unicode.upper()
+                    if len(add)==1:
+                        send(add)
+                        add=""
+                        sent=True
+                        k+=1
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
